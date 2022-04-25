@@ -1,0 +1,298 @@
+---
+title: "PGMs -- An Odyssey"
+subtitle: "Book 1: Bayesian & Markov networks"
+author: "Ben Teo"
+date: "4/25/2022"
+output:
+  ioslides_presentation:
+      self_contained: false
+      mathjax: local
+      css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=F)
+```
+
+$\newcommand{\indep}{\perp\!\!\!\perp}$
+$\newcommand{\notindep}{\not\!\perp\!\!\!\perp}$
+$\newcommand{\contra}{\scriptsize{\rightarrow\!\leftarrow}}$
+$\newcommand{\satis}{\ |\!\!\!=}$
+
+---
+
+<font size="5">
+
+**Odyssey:**
+
+<blockquote>
+1: a long wandering or voyage usually marked by many changes of fortune
+
+2: an intellectual or spiritual wandering or quest
+</blockquote>
+
+**Motivation:**
+
+Draw upon the extensive PGM literature to extend Phylogenetic
+Comparative Methods and software implementations.
+
+**Charting a (tentative) course:**
+
+Koller, Daphne, and Nir Friedman. *Probabilistic graphical models: principles
+and techniques*. MIT press, 2009
+
+- Chapters 3, 4, 7, 9, 10, 11, 14
+
+</font>
+
+## Bayesian networks (BN)
+
+<font size="5">
+
+1. Distribution, $P$
+2. Directed graph, $\mathcal{G}$: Represents a set of (conditional) independencies, $I(\mathcal{G})$.
+
+<def>
+Bayesian network, $\mathcal{B}=(\mathcal{G},P)$ such that $P$ satisfies
+$I(\mathcal{G})$. Also written as $I(\mathcal{G})\subseteq I(P)$.
+</def>
+
+- If $I(\mathcal{G})\subseteq I(P)$, we call $\mathcal{G}$ an *I-map* for $P$.
+
+</font>
+
+---
+
+<font size="5">
+
+1(i). $P$ can be factored as a product of *conditional probability
+distributions* (CPDs) via the chain rule. E.g.:
+
+$\begin{equation*}\begin{split}
+P(X_1,X_2,X_3) &= P(X_1\mid X_2,X_3)P(X_2\mid X_3)P(X_3) \\
+&= P(X_2\mid X_1,X_3)P(X_3\mid X_1)P(X_1)
+\end{split}\end{equation*}$
+
+2(i). $P$ factorizes over $\mathcal{G}$ if
+$$P(X_1,...,X_n)=\prod_i P(X_i\mid\text{Pa}^{\mathcal{G}}_{X_i})$$
+
+- That is, $P$ satisfies the *local independencies* of $\mathcal{G}$,
+$I_{\ell}(\mathcal{G})$.
+- $I_{\ell}(\mathcal{G})$:
+$\text{node}\indep\text{non-descendants} \ \mid\ \text{parents}$
+
+<thm>
+$\mathcal{G}$ is an I-map for $P$ $\Leftrightarrow$ $P$ factorizes over
+$\mathcal{G}$.
+</thm>
+
+- Bayesian network, $\mathcal{B}=(\mathcal{G},P)$ where $P$ factorizes over
+$\mathcal{G}$.
+
+</font>
+
+---
+
+<font size="5">
+
+So far $I(\mathcal{G})=I_{\ell}(\mathcal{G})$. $\mathcal{B}=(\mathcal{G},P)$
+must satisfy $I_{\ell}(\mathcal{G})\subseteq I(P)$.
+
+- But what other (non-local) independencies does $I_{\ell}(\mathcal{G})$ imply?
+By definition, $I(\mathcal{G})$ should also include those.
+
+3\. D-separation: Define *active trails* between two sets of nodes given a conditioning set.
+
+- Absence of an active trail indicates a *global independency*.
+- Conditioning on $Z$ "blocks" the following paths:
+  - $X\rightarrow Z\rightarrow Y$
+  - $X\leftarrow Z\leftarrow Y$
+  - $X\leftarrow Z\rightarrow Y$
+- $X\rightarrow Z\leftarrow Y$ is "active" if we condition on any
+$Z^*\in Z\cup\text{Desc}^{\mathcal{G}}_{Z}$
+  - A v-structure without a covering edge (e.g. $X\leftrightarrow Y$) is called
+  an *immorality*.
+
+</font>
+
+---
+
+<font size="5">
+
+So we define $I(\mathcal{G})=\{(\mathbf{X}\indep\mathbf{Y}\mid\mathbf{Z}):
+\text{d-sep}_{\mathcal{G}}(\mathbf{X};\mathbf{Y}\mid\mathbf{Z})\}$.
+
+<thm>
+D-separation is *sound*, but not *complete*.
+</thm>
+
+- $\text{d-sep}_{\mathcal{G}}(\mathbf{X};\mathbf{Y}\mid\mathbf{Z})\notin
+I(\mathcal{G})$ does not imply
+$\mathbf{X}\notindep\mathbf{Y}\mid\mathbf{Z}$!
+
+4\. Minimal I-maps \& P-maps
+
+- $\mathcal{G}$ is a *minimal* I-map for $P$ if no edge can be removed without
+$I(\mathcal{G})\nsubseteq I(P)$.
+  - E.g. construct such a $\mathcal{G}$ given a topological ordering of the
+  $X_i$s by selecting minimal $\text{Pa}_{X_i}^{\mathcal{G}}$s.
+- $\mathcal{K}$ is a P-map for $P$ if $I(\mathcal{K})=I(P)$.
+
+</font>
+
+---
+
+<font size="5">
+
+Not every $P$ can be perfectly represented by some $\mathcal{G}$. E.g.
+
+- $P(x,y,z)=\begin{cases}1/12, \ x\oplus y\oplus z=\text{false} \\
+1/6, \ x\oplus y\oplus z=\text{true}\end{cases}$
+  - $X$, $Y$, $Z$ are pairwise independent ($\Rightarrow$ no edges),
+  but not jointly independent ($\Rightarrow$ some edges) $\contra$
+- Finer-grained independencies (i.e. that hold for specific variable values)
+- Symmetric independencies (e.g. $\Large{\diamond}$ structure)
+
+</font>
+
+## Markov networks (MN)
+
+<font size="5">
+
+1\. Gibbs distribution, $P_{\Phi}\propto\prod_i\phi_i(\mathbf{D}_i)$
+
+- $\Phi$ denotes $\{\phi_1(\mathbf{D}_1),...,\phi_k(\mathbf{D}_k)\}$
+
+2\. Undirected graph, $\mathcal{H}$
+
+- $\mathbf{X}$ is *separated* from $\mathbf{Y}$ given $\mathbf{Z}$ if every
+path from $\mathbf{X}$ to $\mathbf{Y}$ passes through $\mathbf{Z}$.
+- $I(\mathcal{H})=\{(\mathbf{X}\indep\mathbf{Y}\mid\mathbf{Z}):
+\text{sep}_\mathcal{H}(\mathbf{X};\mathbf{Y}\mid\mathbf{Z})\}$
+
+<def>
+Markov network, $\mathcal{M}=(\mathcal{H},P_\Phi)$ such that
+$I(\mathcal{H})\subseteq I(P_\Phi)$.
+</def>
+
+</font>
+
+---
+
+<font size="5">
+
+2(i). $P_{\Phi}$ factorizes over $\mathcal{H}$ if each $\mathbf{D}_i$ is a
+clique of $\mathcal{H}$.
+
+<thm>
+$P_{\Phi}$ factorizes over $\mathcal{H}$ $\Rightarrow$
+$I(\mathcal{H})\subseteq I(P_\Phi)$.
+</thm>
+
+<thm>
+Suppose $P_{\Phi}>0$. $P_{\Phi}$ factorizes over $\mathcal{H}$ $\Leftrightarrow$
+$I(\mathcal{H})\subseteq I(P_\Phi)$.
+</thm>
+
+- Generally ($P_{\Phi}\ge 0$), factorization is sound but *not complete* for
+$I(\mathcal{H})\subseteq I(P_\Phi)$.
+
+- Considering only $P_\Phi>0$, Markov network, $\mathcal{M}=(\mathcal{H},P_\Phi)$ where $P_\Phi$ factorizes over
+$\mathcal{H}$.
+
+</font>
+
+---
+
+<font size="5">
+
+For BNs, to check if $P\satis I(\mathcal{G})$, it suffices to check
+$P\satis I_{\ell}(\mathcal{G})$. Can we similarly find local criteria for
+$P\satis I(\mathcal{H})$?
+
+3\. Pairwise \& local independencies
+
+- Pairwise: $I_p(\mathcal{H})=\{(X\indep Y\mid\mathcal{X}\setminus\{X,Y\}):
+X-Y\notin\mathcal{H}\}$
+  - Two non-adjacent nodes are independent conditional on the other nodes.
+- Local: $I_{\ell}(\mathcal{H})=\{(X\indep \mathcal{X}\setminus\{X\}
+\setminus\text{MB}^\mathcal{H}_X\mid\text{MB}^\mathcal{H}_X):X\in\mathcal{X}\}$
+  - A node is independent of its non-neighbors conditional on its neighbors.
+
+<thm>
+Suppose $P>0$.
+<div align="center">
+$P\satis I_p(\mathcal{H})\Leftrightarrow P\satis I_{\ell}(\mathcal{H})
+\Leftrightarrow P\satis I(\mathcal{H})$
+</div>
+</thm>
+
+- Generally, $I_p(\mathcal{H})\subseteq I_{\ell}(\mathcal{H})
+\subseteq I(\mathcal{H})$.
+- If $P>0$, then $P\satis I_{p}(\mathcal{H})\Rightarrow
+P\satis I(\mathcal{H})$.
+
+</font>
+
+---
+
+<font size="5">
+
+4\. Representing BNs as MNs, and vice versa
+
+- BN$\rightarrow$MN: Two views
+  - Given $\mathcal{B}=(\mathcal{G},P)$, $\mathcal{G}$ implies a
+  <hl>factorization for $P$</hl>.
+  Construct $\mathcal{H}$ such that each
+  $\{X_i\}\cup\text{Pa}^\mathcal{G}_{X_i}$ is a clique.
+  - Construct $\mathcal{H}$ such that
+  <hl>$I(\mathcal{H})\subseteq I(\mathcal{G})$</hl>
+  using $\text{MB}^\mathcal{G}_{X_i}$s identified from $\mathcal{G}$.
+
+<thm>
+The *moral graph* $\mathcal{H}=\mathcal{M}[\mathcal{G}]$ is a minimal I-map for
+$P$, and is a P-map for $P$ if $\mathcal{G}$ is moral.
+</thm>
+
+- BN$\leftarrow$MN
+
+<thm>
+If $\mathcal{H}$ is *nonchordal*, $\nexists\mathcal{G}$ with
+$I(\mathcal{G})=I(\mathcal{H})$. If $\mathcal{H}$ is *chordal*, such a
+$\mathcal{G}$ exists.
+</thm>
+
+<thm>
+A set of independencies $I$ can be perfectly represented by both some
+$\mathcal{G}$ and some $\mathcal{H}$ iff $I=I(\mathcal{H})$ for some chordal
+$\mathcal{H}$. 
+</thm>
+
+</font>
+
+---
+
+<font size="5">
+
+The existence proofs on the previous slide use *clique trees*.
+
+5\. <def>
+Tree $\mathcal{T}$ is a clique tree for $\mathcal{H}$ if
+
+- Each node is a clique in $\mathcal{H}$, and each maximal clique in
+$\mathcal{H}$ is a node in $\mathcal{T}$.
+- Each edge $\mathbf{C}_i-\mathbf{C}_j$ in $\mathcal{T}$ is associated with
+the sepset $\mathbf{S}_{i,j}=\mathbf{C}_i\cap\mathbf{C}_j$ (intersection of
+neighbor cliques).
+- Each sepset $\mathbf{S}_{i,j}$ separates $\mathbf{W}_{<(i,j)}$ and
+$\mathbf{W}_{<(j,i)}$ in $\mathcal{H}$.
+  - $\mathbf{W}_{<(i,j)}$ is the union of variables in any clique (including
+  $\mathbf{C}_i$) on the $\mathbf{C}_i$ side of the
+  $\mathbf{C}_i-\mathbf{C}_j$ edge.
+</def>
+
+<thm>
+Every chordal $\mathcal{H}$ has a clique tree $\mathcal{T}$.
+</thm>
+
+</font>
