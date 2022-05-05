@@ -1,4 +1,4 @@
-blockquote {
+blockquote{
   background: #f9f9f9;
   border-left: 5px solid #ccc;
   margin: 1.5em 10px;
@@ -13,7 +13,7 @@ def:before{
   font-weight: bold;
 }
 
-hl {
+hl{
   background: aquamarine;
 }
 
@@ -23,5 +23,22 @@ thm{
 }
 thm:before{
   content: "Theorem.";
+  font-weight: bold;
+}
+
+pf{
+  margin-left: 10px;
+}
+pf:before{
+  content: "Proof.";
+  font-weight: bold;
+}
+
+prp{
+  margin-left: 10px;
+  font-style: italic;
+}
+prp:before{
+  content: "Prop.";
   font-weight: bold;
 }
