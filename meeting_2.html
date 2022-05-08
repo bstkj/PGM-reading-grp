@@ -218,7 +218,7 @@ We consider a factor \(\psi_i\) to be a <em>computational data structure</em>, w
 <p>Each clique, \(\mathbf{C}_i\)</p>
 
 <ol>
-<li><em>Receives</em> incoming messages/factors, \(\delta_{k\rightarrow i}\)</li>
+<li><em>Collects</em> messages/factors, \(\delta_{k\rightarrow i}\)</li>
 <li><em>Multiplies</em> them with its initial potential, \(\psi_i\)</li>
 <li><em>Sums out</em> one or more variables, \(\mathbf{C}_i\setminus\mathbf{S}_{i,j}\)</li>
 <li><em>Sends</em> this message/factor, \(\delta_{i\rightarrow j}\) to another clique</li>
@@ -336,24 +336,91 @@ We consider a factor \(\psi_i\) to be a <em>computational data structure</em>, w
 <p>Each clique, \(\mathbf{C}_i\)</p>
 
 <ol>
-<li><em>Receives</em> message, \(\sigma_{k\rightarrow i}/\mu_{i,k}\) from neighbor clique, \(\mathbf{C}_k\)</li>
+<li><em>Receives</em> message, \(\sigma_{k\rightarrow i}/\mu_{i,k}\) through edge \((i-k)\).</li>
 <li><em>Updates</em> its belief \(\beta_i\) by <em>multiplying</em> it with \(\sigma_{k\rightarrow i}/\mu_{i,k}\)</li>
 <li><em>Sums</em> out one or more variables, \(\mathbf{C}_i\setminus\mathbf{S}_{i,j}\) from the updated \(\beta_i\)</li>
 <li><em>Sends</em> this message, \(\sigma_{i\rightarrow j}\) towards neighbor clique, \(\mathbf{C}_j\)</li>
 </ol>
 
-<p>Each edge, \((i-j)\in\mathcal{E}_\mathcal{T}\)</p>
+<p>Each edge, \((i-j)\)</p>
 
 <ol>
 <li><em>Divides</em> a message, \(\sigma_{i\rightarrow j}\) that crosses it by its belief, \(\mu_{i,j}\). \(\sigma_{i\rightarrow j}/\mu_{i,j}\) is sent to the destination clique, \(\mathbf{C}_j\)</li>
 <li><em>Updates</em> its belief \(\mu_{i,j}=\sigma_{i\rightarrow j}\)</li>
 </ol>
 
-<p>The algorithm converges to a calibrated clique tree.</p>
+<p>BU MP converges \(\Rightarrow\) \(\mathcal{T}\) is calibrated.</p>
 
 <p></font></p>
 
-</article></slide><slide class=""><hgroup><h2>Equivalence of SP/BU message passing</h2></hgroup><article  id="equivalence-of-spbu-message-passing"></article></slide>
+</article></slide><slide class=""><hgroup><h2>Equivalence of SP/BU message passing</h2></hgroup><article  id="equivalence-of-spbu-message-passing">
+
+<p><font size="5"></p>
+
+<p><thm> Consider a set of SP initial potentials \(\{\psi_i\mid i\in \mathcal{V}_\mathcal{T}\}\) and messages \(\{\delta_{i\rightarrow j}, \delta_{j\rightarrow i}\mid (i-j)\in\mathcal{E}_\mathcal{T}\}\), and a set of BU beliefs \(\{\beta_i\mid i\in\mathcal{V}_\mathcal{T}\}\) and messages \(\{\mu_{i,j}\mid (i-j)\in\mathcal{E}_\mathcal{T}\}\). Suppose equations \[\begin{equation*}
+\begin{split}
+\beta_i &amp;= \psi_i\prod_{k\in\text{Nb}_i}\delta_{k\rightarrow i} \\
+\mu_{i,j} &amp;= \delta_{j\rightarrow i}\delta_{i\rightarrow j}
+\end{split}
+\end{equation*}\] hold. Then for any \((i-j)\in\mathcal{T}\), the updated SP messages after an application of \(\text{SP-Message}(i,j)\) and the updated BU beliefs after an application of \(\text{BU-Message}(i,j)\) continue to satisfy these equations. </thm></p>
+
+<ul>
+<li>We do not assume \(\delta_{i\rightarrow j}=\sum_{\mathbf{C}_i\setminus \mathbf{S}_{i,j}}\psi_i\prod_{k\in\text{Nb}_i\setminus\{j\}} \delta_{k\rightarrow i}\), or anything specific about how the initial messages were computed!</li>
+</ul>
+
+<p></font></p>
+
+</article></slide><slide class=""><hgroup><h2>Equivalence of SP/BU MP: Implications</h2></hgroup><article  id="equivalence-of-spbu-mp-implications">
+
+<p><font size="5"></p>
+
+<p><cor> The clique tree invariant (i.e. \(\mathcal{Q}_\mathcal{T}=\tilde{P}_\Phi(\mathcal{X})\)) holds initially for BU MP, and for each subsequent MP step. </cor></p>
+
+<ul>
+<li>If clique/sepset beliefs can be factorized according to the two equations on the previous slide, then \(\mathcal{Q}_\mathcal{T}= \tilde{P}_\Phi(\mathcal{X})\) holds.</li>
+<li>After each BU step, the updated beliefs can be factorized accordingly.</li>
+<li>Since the initial beliefs can also be factorized accordingly, the invariant must hold throughout the algorithm’s run.</li>
+</ul>
+
+<p></font></p>
+
+</article></slide><slide class=""><hgroup><h2>Constructing a clique tree</h2></hgroup><article  id="constructing-a-clique-tree">
+
+<p><font size="5"></p>
+
+<ol>
+<li>An execution of VE can be associated with a clique tree (i.e. cluster tree + running intersection property).</li>
+</ol>
+
+<p><cor> Let \(\mathcal{T}\) be a clique tree induced by VE using ordering \(\prec\). \(\mathbf{C}_i\in\mathcal{V}_\mathcal{T}\) iff \(\mathbf{C}_i\) is a clique in the induced graph \(\mathcal{I}_{\Phi,\prec}\). </cor></p>
+
+<ul>
+<li>This motivates the term <em>clique</em> tree.</li>
+<li>It is standard to reduce \(\mathcal{T}\) so that each \(\mathbf{C}_i\in \mathcal{V}_\mathcal{T}\) is a maximal clique in \(\mathcal{I}_{\Phi,\prec}\).</li>
+</ul>
+
+<p><thm> Let \(\mathcal{T}\) be a clique tree induced by VE using ordering \(\prec\). There exists a clique tree \(\mathcal{T}&#39;\) such that \(\mathcal{V}_\mathcal{T}&#39;\subseteq \mathcal{V}_\mathcal{T}\) and every \(\mathcal{V}_\mathcal{T}&#39;\) is the set of maximal cliques in \(\mathcal{I}_{\Phi,\prec}\). </thm></p>
+
+<p></font></p>
+
+</article></slide><slide class=""><hgroup><h2>Constructing a clique tree</h2></hgroup><article  id="constructing-a-clique-tree-1">
+
+<p><font size="5"></p>
+
+<p>Every chordal graph has a clique tree, and any clique tree can be used for inference.</p>
+
+<p>\[\Phi\rightarrow\mathcal{H}_\Phi\rightarrow\mathcal{H}^*
+\rightarrow\mathcal{T}\]</p>
+
+<p><def> The process of constructing a chordal graph that subsumes an existing graph is called <em>triangulation</em>. </def></p>
+
+<p>Finding a minimum triangulation (i.e. the largest clique in the resulting chordal graph has minimum size) is \(\mathcal{NP}\)-hard.</p>
+
+<p>Finding the maximal cliques in a graph is \(\mathcal{NP}\)-hard.</p>
+
+<p>We still need to determine the edges in the clique tree after identifying the maximal cliques.</p>
+
+<p></font></p></article></slide>
 
 
   <slide class="backdrop"></slide>

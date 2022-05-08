@@ -42,3 +42,12 @@ prp:before{
   content: "Prop.";
   font-weight: bold;
 }
+
+cor{
+  margin-left: 10px;
+  font-style: italic;
+}
+cor:before{
+  content: "Cor.";
+  font-weight: bold;
+}

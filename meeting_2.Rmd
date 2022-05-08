@@ -130,7 +130,7 @@ containing $\mathcal{H}$.
 
 Each clique, $\mathbf{C}_i$
 
-1. *Receives* incoming messages/factors, $\delta_{k\rightarrow i}$
+1. *Collects* messages/factors, $\delta_{k\rightarrow i}$
 2. *Multiplies* them with its initial potential, $\psi_i$
 3. *Sums out* one or more variables, $\mathbf{C}_i\setminus\mathbf{S}_{i,j}$
 4. *Sends* this message/factor, $\delta_{i\rightarrow j}$ to another clique
@@ -280,8 +280,7 @@ $\delta_{k\rightarrow i}$s have been received.
 
 Each clique, $\mathbf{C}_i$
 
-1. *Receives* message, $\sigma_{k\rightarrow i}/\mu_{i,k}$ from
-neighbor clique, $\mathbf{C}_k$
+1. *Receives* message, $\sigma_{k\rightarrow i}/\mu_{i,k}$ through edge $(i-k)$.
 2. *Updates* its belief $\beta_i$ by *multiplying* it with
 $\sigma_{k\rightarrow i}/\mu_{i,k}$
 3. *Sums* out one or more variables, $\mathbf{C}_i\setminus\mathbf{S}_{i,j}$
@@ -289,15 +288,111 @@ from the updated $\beta_i$
 4. *Sends* this message, $\sigma_{i\rightarrow j}$ towards neighbor clique,
 $\mathbf{C}_j$
 
-Each edge, $(i-j)\in\mathcal{E}_\mathcal{T}$
+Each edge, $(i-j)$
 
 1. *Divides* a message, $\sigma_{i\rightarrow j}$ that crosses it by its
 belief, $\mu_{i,j}$. $\sigma_{i\rightarrow j}/\mu_{i,j}$ is sent to the 
 destination clique, $\mathbf{C}_j$
 2. *Updates* its belief $\mu_{i,j}=\sigma_{i\rightarrow j}$
 
-The algorithm converges to a calibrated clique tree.
+BU MP converges $\Rightarrow$ $\mathcal{T}$ is calibrated.
 
 </font>
 
 ## Equivalence of SP/BU message passing
+
+<font size="5">
+
+<thm>
+Consider a set of SP initial potentials $\{\psi_i\mid i\in
+\mathcal{V}_\mathcal{T}\}$ and messages $\{\delta_{i\rightarrow j},
+\delta_{j\rightarrow i}\mid (i-j)\in\mathcal{E}_\mathcal{T}\}$, and a set of
+BU beliefs $\{\beta_i\mid i\in\mathcal{V}_\mathcal{T}\}$ and messages
+$\{\mu_{i,j}\mid (i-j)\in\mathcal{E}_\mathcal{T}\}$. Suppose equations
+$$\begin{equation*}
+\begin{split}
+\beta_i &= \psi_i\prod_{k\in\text{Nb}_i}\delta_{k\rightarrow i} \\
+\mu_{i,j} &= \delta_{j\rightarrow i}\delta_{i\rightarrow j}
+\end{split}
+\end{equation*}$$
+hold. Then for any $(i-j)\in\mathcal{T}$, the updated SP messages after an
+application of $\text{SP-Message}(i,j)$ and the updated BU beliefs after an
+application of $\text{BU-Message}(i,j)$ continue to satisfy these equations.
+</thm>
+
+- We do not assume $\delta_{i\rightarrow j}=\sum_{\mathbf{C}_i\setminus
+\mathbf{S}_{i,j}}\psi_i\prod_{k\in\text{Nb}_i\setminus\{j\}}
+\delta_{k\rightarrow i}$, or anything specific about how the initial messages
+were computed!
+
+</font>
+
+## Equivalence of SP/BU MP: Implications
+
+<font size="5">
+
+<cor>
+The clique tree invariant (i.e.
+$\mathcal{Q}_\mathcal{T}=\tilde{P}_\Phi(\mathcal{X})$) holds initially for BU
+MP, and for each subsequent MP step.
+</cor>
+
+- If clique/sepset beliefs can be factorized according to the two equations on
+the previous slide, then $\mathcal{Q}_\mathcal{T}=
+\tilde{P}_\Phi(\mathcal{X})$ holds.
+- After each BU step, the updated beliefs can be factorized accordingly.
+- Since the initial beliefs can also be factorized accordingly, the invariant
+must hold throughout the algorithm's run.
+
+</font>
+
+## Constructing a clique tree
+
+<font size="5">
+
+1. An execution of VE can be associated with a clique tree (i.e. cluster tree +
+running intersection property).
+
+<cor>
+Let $\mathcal{T}$ be a clique tree induced by VE using ordering $\prec$.
+$\mathbf{C}_i\in\mathcal{V}_\mathcal{T}$ iff $\mathbf{C}_i$ is a clique in the
+induced graph $\mathcal{I}_{\Phi,\prec}$.
+</cor>
+
+- This motivates the term *clique* tree.
+- It is standard to reduce $\mathcal{T}$ so that each $\mathbf{C}_i\in
+\mathcal{V}_\mathcal{T}$ is a maximal clique in $\mathcal{I}_{\Phi,\prec}$.
+
+<thm>
+Let $\mathcal{T}$ be a clique tree induced by VE using ordering $\prec$. There
+exists a clique tree $\mathcal{T}'$ such that $\mathcal{V}_\mathcal{T}'\subseteq
+\mathcal{V}_\mathcal{T}$ and every $\mathcal{V}_\mathcal{T}'$ is the set of
+maximal cliques in $\mathcal{I}_{\Phi,\prec}$.
+</thm>
+
+</font>
+
+## Constructing a clique tree
+
+<font size="5">
+
+Every chordal graph has a clique tree, and any clique tree can be used for
+inference.
+
+$$\Phi\rightarrow\mathcal{H}_\Phi\rightarrow\mathcal{H}^*
+\rightarrow\mathcal{T}$$
+
+<def>
+The process of constructing a chordal graph that subsumes an existing graph is
+called *triangulation*.
+</def>
+
+Finding a minimum triangulation (i.e. the largest clique in the resulting
+chordal graph has minimum size) is $\mathcal{NP}$-hard.
+
+Finding the maximal cliques in a graph is $\mathcal{NP}$-hard.
+
+We still need to determine the edges in the clique tree after identifying the
+maximal cliques.
+
+</font>
