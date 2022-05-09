@@ -41,6 +41,11 @@ factors/arrays defined.
 
 <font size="5">
 
+<blockquote>
+A data structure that provides a graphical flowchart of the factor-manipulation
+process.
+</blockquote>
+
 <def>
 Cluster graph $\mathcal{U}$ for set of factors $\Phi$ over $\mathcal{X}$ is an
 undirected graph, each of whose nodes $i$ is a cluster
@@ -121,6 +126,28 @@ undirected graph associated with $\Phi$.
 $\mathcal{T}$ is a clique tree iff it is a clique tree for a chordal graph
 containing $\mathcal{H}$.
 </thm>
+
+- The key to understanding this equivalence goes back to viewing the cluster
+graph as **a data structure that provides a graphical flowchart of the
+factor-manipulation process**.
+
+</font>
+
+## Clique tree: intuition
+
+<font size="5">
+
+Let $\mathcal{H}_\Phi$ be **the** minimal I-map for $P_\Phi$, and $\prec$ some
+VE ordering.
+
+- The induced graph $\mathcal{I}_{\Phi,\prec}$ contains $\mathcal{H}_\Phi$ and
+is chordal.
+- The maximal cliques in $\mathcal{I}_{\Phi,\prec}$ correspond to the clusters
+in $\mathcal{T}_{\Phi,\prec}$.
+- A sequence of VE steps can be represented by a sequence of graph
+transformations applied to starting point $\mathcal{H}_\Phi$.
+- By construction, $S_{i,j}$ as defined for $\mathcal{T}_{\Phi,\prec}$ separates
+$\mathbf{W}_{<(i,j)}$ and $\mathbf{W}_{<(j,i)}$ in $\mathcal{I}_{\Phi,\prec}$.
 
 </font>
 

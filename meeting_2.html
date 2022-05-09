@@ -151,6 +151,12 @@ We consider a factor \(\psi_i\) to be a <em>computational data structure</em>, w
 
 <p><font size="5"></p>
 
+<blockquote>
+
+A data structure that provides a graphical flowchart of the factor-manipulation process.
+
+</blockquote>
+
 <p><def> Cluster graph \(\mathcal{U}\) for set of factors \(\Phi\) over \(\mathcal{X}\) is an undirected graph, each of whose nodes \(i\) is a cluster \(\mathbf{C}_i\subseteq\mathcal{X}\).</p>
 
 <ul>
@@ -208,6 +214,25 @@ We consider a factor \(\psi_i\) to be a <em>computational data structure</em>, w
 <p>Let \(\mathcal{T}\) and \(\mathcal{H}\) respectively be a cluster tree and an undirected graph associated with \(\Phi\).</p>
 
 <p><thm> \(\mathcal{T}\) is a clique tree iff it is a clique tree for a chordal graph containing \(\mathcal{H}\). </thm></p>
+
+<ul>
+<li>The key to understanding this equivalence goes back to viewing the cluster graph as <strong>a data structure that provides a graphical flowchart of the factor-manipulation process</strong>.</li>
+</ul>
+
+<p></font></p>
+
+</article></slide><slide class=""><hgroup><h2>Clique tree: intuition</h2></hgroup><article  id="clique-tree-intuition">
+
+<p><font size="5"></p>
+
+<p>Let \(\mathcal{H}_\Phi\) be <strong>the</strong> minimal I-map for \(P_\Phi\), and \(\prec\) some VE ordering.</p>
+
+<ul>
+<li>The induced graph \(\mathcal{I}_{\Phi,\prec}\) contains \(\mathcal{H}_\Phi\) and is chordal.</li>
+<li>The maximal cliques in \(\mathcal{I}_{\Phi,\prec}\) correspond to the clusters in \(\mathcal{T}_{\Phi,\prec}\).</li>
+<li>A sequence of VE steps can be represented by a sequence of graph transformations applied to starting point \(\mathcal{H}_\Phi\).</li>
+<li>By construction, \(S_{i,j}\) as defined for \(\mathcal{T}_{\Phi,\prec}\) separates \(\mathbf{W}_{&lt;(i,j)}\) and \(\mathbf{W}_{&lt;(j,i)}\) in \(\mathcal{I}_{\Phi,\prec}\).</li>
+</ul>
 
 <p></font></p>
 
