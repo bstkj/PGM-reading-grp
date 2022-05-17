@@ -87,7 +87,7 @@ $\prec$.
 <thm>
 Let $\mathcal{I}_{\Phi,\prec}$ be the induced graph for a set of factors $\Phi$
 and some elimination ordering $\prec$. Then
-    
+
 1. The scope of every factor generated during VE is a clique in
 $\mathcal{I}_{\Phi,\prec}$.
 2. Every maximal clique in $\mathcal{I}_{\Phi,\prec}$ is the scope of some
