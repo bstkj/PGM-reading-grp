@@ -432,3 +432,94 @@ Generally, if $i\notin\text{Ch}_R$, then the $\sum_{j\ge 2}
 $\mathbf{L}_{\text{Pa}_i}$ and $\vec{m}_{\text{Pa}_i}$ respectively.
 
 </font>
+
+## Extension to networks
+
+<font size="4">
+
+**Weighted average merging rule:**
+Let nodes $j_1$ and $j_2$ be parents of hybrid node $i$, then $\vec{x}_i\mid
+\vec{x}_{j_1},\vec{x}_{j_2}$ is multivariate Gaussian satisfying
+
+$$\begin{equation}\begin{split}
+\E{\vec{x}_i\mid\vec{x}_{j_1},\vec{x}_{j_2}} &= \gamma_1\vec{\omega}(i,j_1)
++\gamma_2\vec{\omega}(i,j_2) + \gamma_1\mathbf{\Phi}(i,j_1)\vec{x}_{j_1} +
+\gamma_2\mathbf{\Phi}(i,j_2)\vec{x}_{j_2} \\
+\Var(\vec{x}_i\mid\vec{x}_{j_1},\vec{x}_{j_2}) &= \gamma_1^2\mathbf{V}(i,j_1)+
+\gamma_{2}^2\mathbf{V}(i,j_2)
+\end{split}\end{equation}$$
+
+Given a (directed) network, the general approach to do exact inference involves
+constructing a clique tree (e.g. through moralization, triangulation and so on).
+
+</font>
+
+## Extension to networks
+
+<font size="4">
+
+**Example:** Network with single-reticulation
+
+Suppose we focus on root $\vec{x}_R$, its two children $\vec{x}_1$ and
+$\vec{x}_2$, and their (i.e. $\vec{x}_1$, $\vec{x}_2$) hybrid $\vec{x}_3$.
+$\vec{x}_R$ may have other children besides $\vec{x}_1$ and $\vec{x}_2$, and
+both $\vec{x}_1$ and $\vec{x}_2$ may have other children besides $\vec{x}_3$.
+However, we assume that $\vec{x}_3$ is the only hybrid in the network.
+
+We construct the following clique tree for this network:
+
+1. $\{\vec{x}_R,\vec{x}_1,\vec{x}_2\}$ forms a cluster. Denote this by
+$\mathcal{C}_{1,2}$ since $\vec{x}_1$ and $\vec{x}_2$ are the children in the
+cluster.
+2. $\{\vec{x}_1,\vec{x}_2,\vec{x}_3\}$ forms a cluster. Denote this by
+$\mathcal{C}_3$ since $\vec{x}_3$ is the child in the cluster.
+3. Any edge in the network that is not of a pair within $\{\vec{x}_R,\vec{x}_1,
+\vec{x}_2,\vec{x}_3\}$ forms a cluster. Denote each such cluster by
+$\mathcal{C}_i$, where $\vec{x}_i$ is the child in the cluster.
+4. Join two clusters if a parent in one is a child in the other.
+
+Consider the message sent from $\mathcal{C}_4$ to $\mathcal{C}_{2,3}$:
+
+$$\delta_{4\rightarrow 2,3}=p(\vec{x}_4\mid\vec{x}_2,\vec{x}_3)
+\prod_{k\in\text{Nb}_4\setminus\{2,3\}}\delta_{k\rightarrow 4}$$
+
+</font>
+
+## Extension to networks
+
+<font size="4">
+
+**Example (continued):** Network with single reticulation
+
+$\prod_{k\in\text{Nb}_3\setminus\{1,2\}}\delta_{k\rightarrow 3}=
+\exp(\vec{x}_3\cdot\sum_k\mathbf{L}_k\vec{x}_3+\vec{x}_3\cdot\sum_k\vec{m}_k
++\sum_k r_k)$
+
+$\begin{equation}\begin{split}
+p(\vec{x}_3\mid\vec{x}_1,\vec{x}_2) &= \exp(\vec{x}_3\cdot\mathbf{A}_3\vec{x}_3
++\vec{x}_1\cdot\mathbf{C}_{3,1}\vec{x}_1+\vec{x}_2\cdot\mathbf{C}_{3,2}\vec{x}_2
+\\
+& \hspace{2em} +\vec{x}_3\cdot\mathbf{E}_{3,1}\vec{x}_1+
+\vec{x}_3\cdot\mathbf{E}_{3,2}\vec{x}_2+\vec{x}_2\cdot\mathbf{E}_{3,2,1}
+\vec{x}_1 \\
+& \hspace{2em} +\vec{x}_3\cdot\vec{b}_3+\vec{x}_2\cdot\vec{d}_{3,2}+
+\vec{x}_1\cdot\vec{d}_{3,1}+f_3) 
+\end{split}\end{equation}$
+
+$\begin{equation}\begin{split}
+\delta_{4\rightarrow 2,3} &= p(\mathbf{X}_4\mid\vec{x}_2,\vec{x}_3) \\
+&= \exp(\vec{x}_2\cdot\mathbf{L}_{3,2}\vec{x}_2+
+\vec{x}_2\cdot\vec{m}_{3,2}+\vec{x}_1\cdot\mathbf{L}_{3,1}\vec{x}_1+
+\vec{x}_1\cdot\vec{m}_{3,1}+\vec{x}_2\mathbf{L}_{3,2,1}\vec{x}_1+r_3)
+\end{split}\end{equation}$
+
+$\mathbf{L}_{3,i}=\mathbf{C}_{3,i}-\frac{1}{4}\mathbf{E}_{3,i}'(\mathbf{A}_3+
+\sum_k\mathbf{L}_k)^{-1}\mathbf{E}_{3,i}$
+
+$\vec{m}_{3,i}=\vec{d}_{3,i}-\frac{1}{2}
+\mathbf{E}_{3,i}'(\mathbf{A_3}+\sum_k\mathbf{L}_k)^{-1}(\vec{b}_3+\sum_k m_k)$
+
+$\mathbf{L}_{3,2,1}=\mathbf{E}_{3,2,1}-\frac{1}{2}\mathbf{E}_{3,2}'(\mathbf{A}_3
++\sum_k\mathbf{L}_k)^{-1}\mathbf{E}_{3,1}$
+
+</font>
